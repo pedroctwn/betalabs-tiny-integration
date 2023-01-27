@@ -17,7 +17,7 @@ export function IntegrationStack({ stack }: StackContext) {
 
   new Cron(stack, "Cron", {
     // schedule: "rate(5 minutes)",
-    schedule: "cron(00 00 5 * ? *)",
+    schedule: `cron(00 00 ${process.env.DAY_OF_MONTH} * ? *)`,
     job: {
       function: {
         handler: "functions/getOrdersToQueue.main",
