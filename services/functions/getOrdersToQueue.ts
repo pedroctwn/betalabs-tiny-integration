@@ -1,7 +1,10 @@
 import fetch from "node-fetch";
 import { Queue } from "@serverless-stack/node/queue";
 import AWS from "aws-sdk";
-
+import * as dotenv from 'dotenv';
+if (process.env.IS_LOCAL) {
+  dotenv.config()
+}
 const DEFAULT_LIMIT = 100;
 const DEFAULT_OFFSET = 0;
 
