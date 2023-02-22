@@ -18,7 +18,7 @@ export function IntegrationStack({ stack }: StackContext) {
             actions: ["ses:*"],
             effect: iam.Effect.ALLOW,
             resources: [
-              process.env.SES_ARN,
+              process.env.SES_ARN || "",
             ],
           }),
         ]

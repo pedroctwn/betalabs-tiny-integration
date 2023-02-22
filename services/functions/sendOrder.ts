@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { SESV2 } from "aws-sdk";
 import * as dotenv from 'dotenv';
 if (process.env.IS_LOCAL) {
@@ -9,7 +8,7 @@ const NOME_NATUREZA_OPERACAO = "Venda de mercadoria";
 export async function main(event: any) {
   const order = typeof event.Records[0].body === typeof "string" ? JSON.parse(event.Records[0].body):event.Records[0].body;
   try {
-    const response = await sendToTiny(order)
+    const response: any = await sendToTiny(order)
     if (response?.retorno?.status_processamento && (response?.retorno?.status_processamento === 1 || response?.retorno?.status_processamento === '1')) {
       return {
         statusCode: 500,
@@ -40,7 +39,7 @@ async function sendToTiny(order: any){
         nome: order.consumer.full_name,
         cpf_cnpj: order.consumer.document1,
         email: order.consumer.email,
-        atualizar_cliente: 'N',
+        atualizar_cliente: 'S',
         fone: order.consumer.telephone&&order.consumer.telephone.ddi&&order.consumer.telephone.ddd&&order.consumer.telephone.number ? order.consumer.telephone.ddi+order.consumer.telephone.ddd+order.consumer.telephone.number : "",
         endereco: order.delivery.address?.address,
         numero: order.delivery.address?.number,
@@ -90,21 +89,22 @@ async function sendToTiny(order: any){
       ]
     }
   };
-  return fetch(
-    `https://api.tiny.com.br/api2/pedido.incluir.php?token=${process.env.TINY_TOKEN}&formato=JSON&pedido=${JSON.stringify(tinyOrder)}`,
-    {
-      method: 'POST'
-    }
-  ).then(
-    (res: any) => {
-      return res.json()
-    }
-  );
+  console.log(`https://api.tiny.com.br/api2/pedido.incluir.php?token=${process.env.TINY_TOKEN}&formato=JSON&pedido=${JSON.stringify(tinyOrder)}`)
+  // return fetch(
+  //   `https://api.tiny.com.br/api2/pedido.incluir.php?token=${process.env.TINY_TOKEN}&formato=JSON&pedido=${JSON.stringify(tinyOrder)}`,
+  //   {
+  //     method: 'POST'
+  //   }
+  // ).then(
+  //   (res: any) => {
+  //     return res.json()
+  //   }
+  // );
 }
 
 function sendEmail(order:any){
   try {
-    const mailParams = {
+    const mailParams: any = {
       Content: {
         Simple: {
           Body: {
@@ -186,6 +186,9 @@ function selectFormaEnvio(formaEnvioBetalabs: string) {
   if(formaEnvioBetalabs && formaEnvioBetalabs.toLocaleLowerCase().includes("jadlog")){
     return 'J';
   }
+  if(formaEnvioBetalabs && formaEnvioBetalabs.toLocaleLowerCase().includes("mandae")){
+    return 'T';
+  }
   return 'X';
 }
 
@@ -204,10 +207,10 @@ function selectFormaFrete(formaEnvioBetalabs: string) {
       return '.Package';
     }
     if(formaEnvioBetalabs.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes("rapido")){
-      return 'MadaeExpress';
+      return 'MandaeExpress';
     }
     if(formaEnvioBetalabs.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes("economico")){
-      return 'MadaeEconomico';
+      return 'MandaeEconomico';
     }
     if(formaEnvioBetalabs.toLocaleLowerCase().includes("brecinho")){
       return 'ROPI - BRECINHO ENVIOS';
