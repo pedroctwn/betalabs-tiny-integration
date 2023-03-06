@@ -47,8 +47,9 @@ function getOrders(limit: number, offset: number): Promise<unknown> {
     }
   ).then(
     (res) => {
-      console.log("================", res.json())
-      return res.json()
+      const result = res.json();
+      console.error("================", result);
+      return result;
     }
   );
 }
