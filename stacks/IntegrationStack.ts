@@ -21,7 +21,12 @@ export function IntegrationStack({ stack }: StackContext) {
               process.env.SES_ARN || "",
             ],
           }),
-        ]
+        ],
+        environment: {
+          TINY_TOKEN: process.env.TINY_TOKEN || "",
+          NOTIFICATION_EMAIL: process.env.NOTIFICATION_EMAIL || "",
+          SES_ARN: process.env.SES_ARN || ""
+        },
       }
     },
     cdk: {
@@ -43,7 +48,10 @@ export function IntegrationStack({ stack }: StackContext) {
       function: {
         handler: "functions/getOrdersToQueue.main",
         timeout: 600,
-        bind: [sendOrderQueue]
+        bind: [sendOrderQueue],
+        environment: {
+          BETALABS_TOKEN: process.env.BETALABS_TOKEN || ""
+        }
       },
     }
   });
