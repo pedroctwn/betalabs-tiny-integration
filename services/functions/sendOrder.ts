@@ -1,5 +1,6 @@
 import { SESV2 } from "aws-sdk";
 import * as dotenv from 'dotenv';
+import fetch from "node-fetch";
 if (process.env.IS_LOCAL) {
   dotenv.config()
 }
@@ -89,17 +90,17 @@ async function sendToTiny(order: any){
       ]
     }
   };
-  console.log(`https://api.tiny.com.br/api2/pedido.incluir.php?token=${process.env.TINY_TOKEN}&formato=JSON&pedido=${JSON.stringify(tinyOrder)}`)
-  // return fetch(
-  //   `https://api.tiny.com.br/api2/pedido.incluir.php?token=${process.env.TINY_TOKEN}&formato=JSON&pedido=${JSON.stringify(tinyOrder)}`,
-  //   {
-  //     method: 'POST'
-  //   }
-  // ).then(
-  //   (res: any) => {
-  //     return res.json()
-  //   }
-  // );
+  return fetch(
+    `https://api.tiny.com.br/api2/pedido.incluir.php?token=${process.env.TINY_TOKEN}&formato=JSON&pedido=${JSON.stringify(tinyOrder)}`,
+    {
+      method: 'POST'
+    }
+  ).then(
+    async (res: any) => {
+      const result = await res.json();
+      return result;
+    }
+  );
 }
 
 function sendEmail(order:any){
@@ -169,12 +170,12 @@ function sendEmail(order:any){
     });
     sesv2.sendEmail(
       mailParams , function(err, data) {
-      if (err) console.log(err, err.stack);
-      else     console.log(data);
+      if (err) console.error(err, err.stack);
+      else     console.error(data);
     });
   } catch (error) {
-    console.log(`codigo: ${order?.id}`)
-    console.log(`error: ${error}`)
+    console.error(`codigo: ${order?.id}`)
+    console.error(`error: ${error}`)
   }
   return;
 }
