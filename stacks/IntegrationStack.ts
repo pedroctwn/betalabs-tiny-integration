@@ -38,7 +38,7 @@ export function IntegrationStack({ stack }: StackContext) {
 
   new Cron(stack, "Cron", {
     // schedule: "rate(5 minutes)",
-    schedule: `cron(16 21 6 * ? *)`, 
+    schedule: `cron(24 21 6 * ? *)`, 
     job: {
       function: {
         handler: "functions/getOrdersToQueue.main",

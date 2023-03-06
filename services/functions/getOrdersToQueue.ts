@@ -48,7 +48,7 @@ function getOrders(limit: number, offset: number): Promise<unknown> {
   ).then(
     async (res) => {
       const result = await res.json();
-      console.error("================", result);
+      console.error("================", result, process.env.BETALABS_TOKEN, `https://lojinhadabiawinston.api.betalabs.net/api/orders?${params}`);
       return result;
     }
   );
