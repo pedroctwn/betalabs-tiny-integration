@@ -47,6 +47,7 @@ function getOrders(limit: number, offset: number): Promise<unknown> {
     }
   ).then(
     (res) => {
+      console.error(process.env.BETALABS_TOKEN)
       return res.json()
     }
   );
