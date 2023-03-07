@@ -15,13 +15,14 @@
     "@serverless-stack/cli": "^1.18.4",
     "@serverless-stack/resources": "^1.18.4",
     "@tsconfig/node16": "^1.0.3",
+    "@types/uuid": "^9.0.1",
     "aws-cdk-lib": "2.50.0",
     "typescript": "^4.9.4",
     "vitest": "^0.28.1"
   },
   "dependencies": {
-    "dotenv": "^16.0.3",
-    "@serverless-stack/node": "^1.18.4"
+    "@serverless-stack/node": "^1.18.4",
+    "dotenv": "^16.0.3"
   },
   "workspaces": [
     "services"

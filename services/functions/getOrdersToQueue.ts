@@ -1,19 +1,17 @@
 import fetch from "node-fetch";
 import { Queue } from "@serverless-stack/node/queue";
 import AWS from "aws-sdk";
-import * as dotenv from 'dotenv';
-if (process.env.IS_LOCAL) {
-  dotenv.config()
-}
+import { Integer } from "aws-sdk/clients/apigateway";
+
 const DEFAULT_LIMIT = 100;
 const DEFAULT_OFFSET = 0;
 
 export async function main() {
   let ordersRequest: any = await getOrders(DEFAULT_LIMIT, DEFAULT_OFFSET);
-  await sendOrdersToQueue(ordersRequest.data);
+  await sendOrdersToQueue(ordersRequest.data, 0);
   for (let i = 1; i < parseInt(ordersRequest.meta['meta-last-page']); i++) {
     ordersRequest = await getOrders(DEFAULT_LIMIT, DEFAULT_LIMIT*i+1);
-    await sendOrdersToQueue(ordersRequest.data);
+    await sendOrdersToQueue(ordersRequest.data, 45*i);
   }
   return {
     statusCode: 200,
@@ -50,19 +48,21 @@ function getOrders(limit: number, offset: number): Promise<unknown> {
       const result = await res.json();
       return result;
     }
-  );
+  ).catch((error: any) => {
+    console.log("error betalabs: ", error)
+    return error;
+  });
 }
 
-async function sendOrdersToQueue(orders: Array<any>) {  
+async function sendOrdersToQueue(orders: Array<any>, delay: Integer = 0) {  
   const sqs = new AWS.SQS();
   for (let order of orders) {
     await sqs
     .sendMessage({
       QueueUrl: Queue.SendOrderQueue.queueUrl,
       MessageBody: JSON.stringify(order),
-      MessageGroupId: new Date().toJSON().split('T')[0]
-    })
-    .promise();
+      DelaySeconds: delay
+    }).promise()
   }
   return;
 }
