@@ -22,7 +22,6 @@ export function IntegrationStack({ stack }: StackContext) {
     function: {
       handler: "functions/sendOrder.main",
       timeout: 30,
-      retryAttempts: 2,
       permissions: [
         new iam.PolicyStatement({
           actions: ["ses:*"],
@@ -43,7 +42,7 @@ export function IntegrationStack({ stack }: StackContext) {
 
   new Cron(stack, "Cron", {
     // schedule: "rate(5 minutes)",
-    schedule: `cron(1 3 ${process.env.DAY_OF_MONTH} * ? *)`,
+    schedule: `cron(0/15 3 ${process.env.DAY_OF_MONTH} * ? *)`,
     job: {
       function: {
         handler: "functions/getOrdersToQueue.main",
