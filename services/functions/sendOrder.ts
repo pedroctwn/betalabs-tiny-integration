@@ -16,8 +16,11 @@ export async function main(event: any) {
         await sqs
         .sendMessage({
           QueueUrl: Queue.SendOrderQueue.queueUrl,
-          MessageBody: JSON.stringify(order),
-          DelaySeconds: 60
+          MessageBody: JSON.stringify({
+            ...order,
+            retry: order.retry + 1
+          }),
+          DelaySeconds: order.retry*2*60%900
         })
         .promise();
       } catch (error) {

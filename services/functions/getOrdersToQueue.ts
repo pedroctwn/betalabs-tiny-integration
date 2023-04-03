@@ -60,7 +60,10 @@ async function sendOrdersToQueue(orders: Array<any>, delay: Integer = 0) {
     await sqs
     .sendMessage({
       QueueUrl: Queue.SendOrderQueue.queueUrl,
-      MessageBody: JSON.stringify(order),
+      MessageBody: JSON.stringify({
+        ...order,
+        retry: 0
+      }),
       DelaySeconds: delay
     }).promise()
   }

@@ -42,7 +42,7 @@ export function IntegrationStack({ stack }: StackContext) {
 
   new Cron(stack, "Cron", {
     // schedule: "rate(5 minutes)",
-    schedule: `cron(0/15 3 ${process.env.DAY_OF_MONTH} * ? *)`,
+    schedule: `cron(0/15 15-20 ${process.env.DAY_OF_MONTH} * ? *)`,
     job: {
       function: {
         handler: "functions/getOrdersToQueue.main",
